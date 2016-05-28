@@ -77,6 +77,7 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
             dataType: 'jsonp',
             cache: true,
             success: function(data) {
+              delete data.debug; // remove debug info added by php-mf2
               var result = $('<section></section>');
               $('<h2><a href="'+service.endpoint+'">'+service.name+'</a></h2>').appendTo(result);
               result.append($('<pre></pre>').text(JSON.stringify(data, null, 2)));
