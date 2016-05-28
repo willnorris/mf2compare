@@ -12,6 +12,15 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-browser/0.1.0/jquery.browser.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
     <style>
+        h1 {
+          font-size: 1.25em;
+        }
+        form {
+          margin: 1em 0;
+        }
+        input[type=url] {
+          width: 30em;
+        }
         #results > section {
           background: #f7f7f7;
           float: left;
@@ -21,16 +30,18 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
           padding: 1em;
         }
         #results > section > h2 {
-          font-size: 18px;
+          font-size: 1.125em;
           margin: 0;
           padding: 0;
         }
     </style>
   </head>
   <body>
+    <h1>mf2compare</h1>
+    <p>Compare the results of different microformats2 libraries.</p>
     <form action="" method="get">
-      <input type="url" name="url" id="url">
-      <input type="submit">
+      <input type="url" name="url" id="url" placeholder="URL" autofocus>
+      <input type="submit" value="Parse Microformats">
     </form>
 
     <div id="results">
@@ -57,22 +68,23 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
       ];
 
       var qs = $.deparam.querystring();
-      document.getElementById("url").value = qs.url
-
-      services.forEach(function(service) {
-        console.log("calling:", service.endpoint);
-        jQuery.ajax(service.endpoint, {
-          data: qs,
-          dataType: 'jsonp',
-          cache: true,
-          success: function(data) {
-            var result = $('<section></section>');
-            $('<h2><a href="'+service.endpoint+'">'+service.name+'</a></h2>').appendTo(result);
-            result.append($('<pre></pre>').text(JSON.stringify(data, null, 2)));
-            result.appendTo('#results');
-          },
+      if (qs.url) {
+        document.getElementById("url").value = qs.url
+        services.forEach(function(service) {
+          console.log("calling:", service.endpoint);
+          jQuery.ajax(service.endpoint, {
+            data: qs,
+            dataType: 'jsonp',
+            cache: true,
+            success: function(data) {
+              var result = $('<section></section>');
+              $('<h2><a href="'+service.endpoint+'">'+service.name+'</a></h2>').appendTo(result);
+              result.append($('<pre></pre>').text(JSON.stringify(data, null, 2)));
+              result.appendTo('#results');
+            },
+          });
         });
-      });
+      }
     </script>
   </body>
 </html>
