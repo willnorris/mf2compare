@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+Copyright 2016 Google Inc.
+
+Use of this source code is governed by a MIT-style license that can be found in
+the LICENSE file or at https://opensource.org/licenses/MIT.
+-->
+<html>
+  <head>
+    <title>Microformats</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-browser/0.1.0/jquery.browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
+  </head>
+  <body>
+    <form action="" method="get">
+      <input type="url" name="url" id="url">
+      <input type="submit">
+    </form>
+
+    <div id="results">
+    </div>
+
+    <script>
+      var services = [
+        {
+          name: "microformat-node",
+          endpoint: "http://glennjones.net/tools/microformats/",
+        },
+        {
+          name: "php-mf2",
+          endpoint: "https://pin13.net/mf2/",
+        },
+        {
+          name: "mf2py",
+          endpoint: "http://mf2.kylewm.com/",
+        },
+        {
+          name: "gomf",
+          endpoint: "https://willnorris.com/go/microformats/live",
+        },
+      ];
+
+      var qs = $.deparam.querystring();
+      document.getElementById("url").value = qs.url
+
+      services.forEach(function(service) {
+        console.log("calling:", service.endpoint);
+        jQuery.ajax(service.endpoint, {
+          data: qs,
+          dataType: 'jsonp',
+          cache: true,
+          success: function(data) {
+            var result = $('<section></section>');
+            $('<h2><a href="'+service.endpoint+'">'+service.name+'</a></h2>').appendTo(result);
+            result.append($('<pre></pre>').text(JSON.stringify(data, null, 2)));
+            result.appendTo('#results');
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
