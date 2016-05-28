@@ -13,3 +13,8 @@ mf2compare compares the output of multiple microformats2 libraries:
 
 This is primarily useful as a debugging tool to spot behavioral differences
 between these libraries.
+
+## License
+
+This tool is copyright Google, but is not an official Google product. It is
+available under an [MIT License](LICENSE).
