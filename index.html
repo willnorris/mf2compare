@@ -10,7 +10,6 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
     <title>Microformats</title>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-browser/0.1.0/jquery.browser.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
     <style>
         h1 {
           font-size: 1.25em;
@@ -67,13 +66,13 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
         },
       ];
 
-      var qs = $.deparam.querystring();
-      if (qs.url) {
-        document.getElementById("url").value = qs.url
+      var url = new URL(window.location).searchParams.get("url");
+      if (url) {
+        document.getElementById("url").value = url
         services.forEach(function(service) {
           console.log("calling:", service.endpoint);
           jQuery.ajax(service.endpoint, {
-            data: qs,
+            data: {'url':url},
             dataType: 'jsonp',
             cache: true,
             success: function(data) {
