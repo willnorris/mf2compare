@@ -71,36 +71,41 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
         },
       ];
 
-      var url = new URL(window.location).searchParams.get("url");
+      var url = window.location.search.replace(/\?.*url=([^&]+).*/, "$1");
       if (url) {
-        document.getElementById("url").value = url;
-        var results = document.getElementById('results');
+        document.getElementById("url").value = decodeURIComponent(url);
 
         services.forEach(function(service) {
           var endpoint = new URL(service.endpoint);
-          endpoint.searchParams.set("url", url);
+          endpoint.search = "?url="+url;
 
-          fetch(endpoint).then(function(response) {
-            return response.json();
-          }).then(function(data) {
-            delete data.debug; // remove debug info added by php-mf2
-
-            var section = document.createElement('section');
-            results.appendChild(section);
-
-            var heading = document.createElement('h2');
-            section.appendChild(heading);
-
-            var link = document.createElement('a');
-            link.setAttribute('href', service.endpoint);
-            link.innerText = service.name;
-            heading.appendChild(link)
-
-            var result = document.createElement('pre');
-            result.innerText = JSON.stringify(data, null, 2);
-            section.appendChild(result);
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", endpoint);
+          xhr.addEventListener("load", function() {
+            data = JSON.parse(this.responseText);
+            renderResult(service, data);
           });
+          xhr.send();
         });
+      }
+
+      function renderResult(service, data) {
+        delete data.debug; // remove debug info added by php-mf2
+
+        var section = document.createElement('section');
+        document.getElementById('results').appendChild(section);
+
+        var heading = document.createElement('h2');
+        section.appendChild(heading);
+
+        var link = document.createElement('a');
+        link.setAttribute('href', service.endpoint);
+        link.innerText = service.name;
+        heading.appendChild(link)
+
+        var result = document.createElement('pre');
+        result.innerText = JSON.stringify(data, null, 2);
+        section.appendChild(result);
       }
     </script>
   </body>
