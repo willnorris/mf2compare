@@ -8,8 +8,6 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
 <html>
   <head>
     <title>Microformats</title>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-browser/0.1.0/jquery.browser.js"></script>
     <style>
         h1 {
           font-size: 1.25em;
@@ -48,6 +46,7 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
 
     <script>
       var services = [
+        /*
         {
           name: "microformat-node",
           endpoint: "http://glennjones.net/tools/microformats/",
@@ -60,6 +59,7 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
           name: "mf2py",
           endpoint: "https://mf2.kylewm.com/",
         },
+        */
         {
           name: "gomf",
           endpoint: "https://willnorris.com/go/microformats/live",
@@ -68,20 +68,32 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
 
       var url = new URL(window.location).searchParams.get("url");
       if (url) {
-        document.getElementById("url").value = url
+        document.getElementById("url").value = url;
+        var results = document.getElementById('results');
+
         services.forEach(function(service) {
-          console.log("calling:", service.endpoint);
-          jQuery.ajax(service.endpoint, {
-            data: {'url':url},
-            dataType: 'jsonp',
-            cache: true,
-            success: function(data) {
-              delete data.debug; // remove debug info added by php-mf2
-              var result = $('<section></section>');
-              $('<h2><a href="'+service.endpoint+'">'+service.name+'</a></h2>').appendTo(result);
-              result.append($('<pre></pre>').text(JSON.stringify(data, null, 2)));
-              result.appendTo('#results');
-            },
+          var endpoint = new URL(service.endpoint);
+          endpoint.searchParams.set("url", url);
+
+          fetch(endpoint).then(function(response) {
+            return response.json();
+          }).then(function(data) {
+            delete data.debug; // remove debug info added by php-mf2
+
+            var section = document.createElement('section');
+            results.appendChild(section);
+
+            var heading = document.createElement('h2');
+            section.appendChild(heading);
+
+            var link = document.createElement('a');
+            link.setAttribute('href', service.endpoint);
+            link.innerText = service.name;
+            heading.appendChild(link)
+
+            var result = document.createElement('pre');
+            result.innerText = JSON.stringify(data, null, 2);
+            section.appendChild(result);
           });
         });
       }
