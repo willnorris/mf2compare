@@ -9,6 +9,9 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
   <head>
     <title>Microformats</title>
     <style>
+        body {
+          margin: 0.5em;
+        }
         h1 {
           font-size: 1.25em;
         }
@@ -18,13 +21,14 @@ the LICENSE file or at https://opensource.org/licenses/MIT.
         input[type=url] {
           width: 30em;
         }
+        #results {
+          display: flex;
+        }
         #results > section {
           background: #f7f7f7;
-          float: left;
-          width: calc(25% - 2em - 10px);
           overflow: auto;
-          margin: 0 5px;
-          padding: 1em;
+          margin: 0 0.25em;
+          padding: 0.5em;
         }
         #results > section > h2 {
           font-size: 1.125em;
